@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingia - Disc Sales System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #f43f5e;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --blur: blur(20px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .glass-container {
+            background: var(--card-bg);
+            backdrop-filter: var(--blur);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            color: white;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin: 0 auto 1rem;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+
+        .form-container h2 {
+            font-size: 1.75rem;
+            margin-bottom: 2rem;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 15px 20px;
+            font-size: 1rem;
+            color: white;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
+        }
+
+        .password-input {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .remember-me input {
+            width: auto;
+        }
+
+        .forgot-password {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-text, .btn-loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-loading {
+            display: none;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .register-link a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .register-link a:hover {
+            color: #e0e7ff;
+            text-decoration: underline;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .back-link a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .back-link a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .alert {
+            border-radius: 12px;
+            border: none;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 480px) {
+            .glass-container {
+                padding: 2rem 1.5rem;
+            }
+            
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+            
+            .logo-text {
+                font-size: 1.75rem;
+            }
+            
+            .form-options {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-container">
+        <div class="logo-container">
+            <div class="logo-icon">
+                <i class="fas fa-compact-disc"></i>
+            </div>
+            <div class="logo-text">DISC SALES</div>
+            <div class="logo-subtitle">Mfumo wa Usimamizi wa Mauzo</div>
+        </div>
+
+        <div class="form-container">
+            <h2>Ingia kwenye Akaunti</h2>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="email" class="form-control" placeholder="Barua pepe" required id="loginEmail">
+                </div>
+                
+                <div class="form-group">
+                    <div class="password-input">
+                        <input type="password" class="form-control" placeholder="Nenosiri" required id="loginPassword">
+                        <button type="button" class="toggle-password" onclick="togglePassword('loginPassword')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox"> Kumbuka nitumie
+                    </label>
+                    <a href="#" class="forgot-password">Umesahau nenosiri?</a>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <span class="btn-text"><i class="fas fa-sign-in-alt"></i> Ingia</span>
+                    <span class="btn-loading"><i class="fas fa-spinner fa-spin"></i> Inaload...</span>
+                </button>
+                
+                <div id="loginAlert" class="mt-3"></div>
+            </form>
+
+            <div class="register-link">
+                <p>Huna akaunti? <a onclick="goToRegister()">Jisajili hapa</a></p>
+            </div>
+
+            <div class="back-link">
+                <a onclick="goToHome()">← Rudi nyumbani</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const toggleIcon = passwordInput.nextElementSibling.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.className = 'fas fa-eye';
+            }
+        }
+
+        // Navigation functions
+        function goToRegister() {
+            window.location.href = 'register.html';
+        }
+
+        function goToHome() {
+            window.location.href = 'index.html';
+        }
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const submitBtn = this.querySelector('.submit-btn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+            
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline-flex';
+            submitBtn.disabled = true;
+            
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Get users from localStorage
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                console.log('Available users:', users);
+                
+                // Find user by email and password
+                const user = users.find(u => u.email === email && u.password === password);
+                
+                if (!user) {
+                    showAlert('loginAlert', '❌ Barua pepe au nenosiri si sahihi!', 'danger');
+                    return;
+                }
+                
+                // 🔒 CHECK USER STATUS BEFORE LOGIN
+                if (user.status === 'pending') {
+                    showAlert('loginAlert', '⏳ Akaunti yako bado inasubiri idhini ya msimamizi.', 'warning');
+                    return;
+                }
+                
+                if (user.status === 'blocked') {
+                    showAlert('loginAlert', '🚫 Akaunti yako imekatwa. Wasiliana na msimamizi.', 'danger');
+                    return;
+                }
+                
+                // Successful login
+                localStorage.setItem('currentUser', JSON.stringify({
+                    id: user.id,
+                    full_name: user.full_name,
+                    email: user.email,
+                    role: user.role,
+                    status: user.status
+                }));
+                localStorage.setItem('token', 'user-token-' + Date.now());
+                
+                // Update last login
+                user.last_login = new Date().toLocaleDateString('en-CA');
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                showAlert('loginAlert', '✅ Kuingia kumefanikiwa! Inaelekeza...', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                showAlert('loginAlert', '❌ Hitilafu ya mtandao! Jaribu tena.', 'danger');
+            } finally {
+                btnText.style.display = 'inline-flex';
+                btnLoading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+
+        function showAlert(alertId, message, type) {
+            const alertDiv = document.getElementById(alertId);
+            if (alertDiv) {
+                alertDiv.innerHTML = `
+                    <div class="alert alert-${type} alert-dismissible fade show">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+            }
+        }
+
+        // Clear any existing session on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loginEmail').focus();
+            
+            // Check if there's a success message from registration
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('registered') === 'true') {
+                showAlert('loginAlert', '✅ Usajili umefanikiwa! Tafadhali ingia kwenye akaunti yako.', 'success');
+            }
+        });
+
+        // Debug function to check localStorage
+        function debugLocalStorage() {
+            console.log('=== LOCALSTORAGE DEBUG ===');
+            console.log('Users:', JSON.parse(localStorage.getItem('users') || '[]'));
+            console.log('Current User:', localStorage.getItem('currentUser'));
+            console.log('Token:', localStorage.getItem('token'));
+            console.log('========================');
+        }
+
+        // Call debug function (remove in production)
+        debugLocalStorage();
+    </script>
+</body>
+</html>

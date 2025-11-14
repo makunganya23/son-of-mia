@@ -1,0 +1,3655 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashibodi - Disc Sales System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #f43f5e;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --sidebar-bg: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --blur: blur(10px);
+        }
+
+        [data-theme="dark"] {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #f43f5e;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #f8fafc;
+            --light: #1e293b;
+            --gray: #94a3b8;
+            --card-bg: rgba(30, 41, 59, 0.95);
+            --sidebar-bg: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+            --glass-bg: rgba(15, 23, 42, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        /* Main Layout */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar-content {
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: white;
+        }
+
+        .brand-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* User Welcome Card */
+        .user-welcome {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            margin: 1rem;
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-welcome h4 {
+            color: white;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .user-welcome p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+        }
+
+        /* Navigation */
+        .sidebar-nav {
+            flex: 1;
+            padding: 1rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+            margin: 1.5rem 0 0.75rem 0.5rem;
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1rem;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(8px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-link i {
+            width: 20px;
+            margin-right: 0.75rem;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            color: #cbd5e1;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 0;
+            min-height: 100vh;
+            width: calc(100% - 280px);
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .page-title h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            background: linear-gradient(135deg, #1e293b, #475569);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        [data-theme="dark"] .page-title h1 {
+            background: linear-gradient(135deg, #f8fafc, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-title p {
+            color: #64748b;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        /* User Menu */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+        }
+
+        .user-menu:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .user-avatar-sm {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            overflow: hidden;
+        }
+
+        .user-avatar-sm img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-info-sm {
+            text-align: right;
+        }
+
+        .user-info-sm .user-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--dark);
+        }
+
+        .user-info-sm .user-role {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* Dropdown Menu */
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--card-bg);
+            backdrop-filter: var(--blur);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 0.5rem;
+            min-width: 180px;
+            display: none;
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-dropdown.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #64748b;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+
+        .dropdown-item i {
+            width: 18px;
+            margin-right: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 1.5rem;
+            max-width: 100%;
+            margin: 0 auto;
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        /* IMPROVED DASHBOARD LAYOUT */
+        .dashboard-main {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .main-cards {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Modern Stat Cards */
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        [data-theme="dark"] .stat-card {
+            background: linear-gradient(135deg, rgba(30,41,59,0.95), rgba(30,41,59,0.9));
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 20px 20px 0 0;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .stat-content h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-content p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+
+        .trend-up {
+            color: var(--success);
+        }
+
+        .trend-down {
+            color: var(--danger);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Quick Actions Panel */
+        .quick-actions-panel {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] .panel-header {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .panel-header i {
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .panel-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--dark);
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .action-card {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 16px;
+            padding: 1.25rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        [data-theme="dark"] .action-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+        }
+
+        [data-theme="dark"] .action-card:hover {
+            background: linear-gradient(135deg, #334155, #1e293b);
+        }
+
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.75rem;
+            font-size: 1.25rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .action-card h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .action-card p {
+            color: var(--gray);
+            font-size: 0.75rem;
+            margin: 0;
+        }
+
+        /* Urgent Alerts Panel */
+        .alerts-panel {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .alert-item:hover {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        [data-theme="dark"] .alert-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .alert-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .alert-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .alert-icon.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .alert-icon.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .alert-icon.danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .alert-content h5 {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+
+        .alert-content p {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin: 0;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        [data-theme="dark"] .card-header {
+            background: rgba(30, 41, 59, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Tables */
+        .table {
+            width: 100%;
+            margin-bottom: 0;
+            border-collapse: collapse;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .table th {
+            background: rgba(248, 250, 252, 0.8);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+            padding: 1rem 0.75rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray);
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        [data-theme="dark"] .table th {
+            background: rgba(30, 41, 59, 0.8);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .table td {
+            padding: 1rem 0.75rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        [data-theme="dark"] .table td {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Alerts */
+        .alert {
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-left-color: var(--warning);
+            color: #92400e;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-left-color: var(--success);
+            color: #065f46;
+        }
+
+        /* Buttons */
+        .btn {
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        /* Badges */
+        .badge {
+            padding: 0.35em 0.65em;
+            font-size: 0.75em;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+
+        .bg-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+        }
+
+        .bg-success {
+            background: linear-gradient(135deg, var(--success), #059669) !important;
+        }
+
+        .bg-warning {
+            background: linear-gradient(135deg, var(--warning), #d97706) !important;
+        }
+
+        .bg-danger {
+            background: linear-gradient(135deg, var(--danger), #dc2626) !important;
+        }
+
+        .bg-secondary {
+            background: linear-gradient(135deg, var(--gray), #475569) !important;
+        }
+
+        /* Text Colors */
+        .text-success { color: var(--success) !important; }
+        .text-warning { color: var(--warning) !important; }
+        .text-danger { color: var(--danger) !important; }
+        .text-primary { color: var(--primary) !important; }
+        .text-muted { color: #64748b !important; }
+
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--dark);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Modal Styles */
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-bottom: none;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        [data-theme="dark"] .form-control {
+            border: 2px solid #334155;
+            background: #1e293b;
+            color: white;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+        }
+
+        /* POS Styles */
+        .pos-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            height: calc(100vh - 200px);
+            min-height: 600px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem;
+            max-height: calc(100vh - 300px);
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.25rem 0.75rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 140px;
+        }
+
+        [data-theme="dark"] .product-card {
+            border: 2px solid #334155;
+        }
+
+        .product-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-card.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .product-card h5 {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .product-card .price {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 0.25rem;
+        }
+
+        .product-card .stock {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .product-card .low-stock {
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        .cart-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 400px;
+            padding: 1rem;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.875rem;
+            border-bottom: 1px solid #e2e8f0;
+            background: var(--card-bg);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        [data-theme="dark"] .cart-item {
+            border-bottom: 1px solid #334155;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 6px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .cart-summary {
+            background: rgba(0, 0, 0, 0.02);
+            border-top: 2px solid #e2e8f0;
+        }
+
+        [data-theme="dark"] .cart-summary {
+            background: rgba(255, 255, 255, 0.05);
+            border-top: 2px solid #334155;
+        }
+
+        .empty-cart {
+            padding: 2rem;
+            color: var(--gray);
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-left: 4px solid;
+            margin-bottom: 1rem;
+            min-width: 280px;
+            animation: slideIn 0.3s ease;
+        }
+
+        [data-theme="dark"] .toast {
+            background: #1e293b;
+        }
+
+        .toast.success {
+            border-left-color: var(--success);
+        }
+
+        .toast.warning {
+            border-left-color: var(--warning);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Spinner */
+        .spinner-border {
+            width: 2.5rem;
+            height: 2.5rem;
+            border: 0.25em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border 0.75s linear infinite;
+        }
+
+        @keyframes spinner-border {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--dark);
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Print Styles for Receipt */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .receipt-container, .receipt-container * {
+                visibility: visible;
+            }
+            .receipt-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+
+        .receipt-container {
+            background: white;
+            padding: 2rem;
+            max-width: 400px;
+            margin: 0 auto;
+            font-family: monospace;
+            color: black;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px dashed #000;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .receipt-items {
+            width: 100%;
+            margin-bottom: 1rem;
+            border-collapse: collapse;
+        }
+
+        .receipt-items th {
+            text-align: left;
+            border-bottom: 1px dashed #000;
+            padding: 0.5rem 0;
+        }
+
+        .receipt-items td {
+            padding: 0.25rem 0;
+        }
+
+        .receipt-total {
+            border-top: 2px dashed #000;
+            padding-top: 1rem;
+            font-weight: bold;
+        }
+
+        /* Report Styles */
+        .report-container {
+            background: white;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+        }
+
+        .report-header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .report-summary {
+            margin-bottom: 2rem;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+
+        .report-table th,
+        .report-table td {
+            border: 1px solid #000;
+            padding: 0.5rem;
+            text-align: left;
+        }
+
+        .report-table th {
+            background: #f8f9fa;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard-main {
+                grid-template-columns: 1fr;
+            }
+            
+            .side-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .pos-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .content-area {
+                padding: 1rem;
+            }
+            
+            .top-nav {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-info-sm {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .table-responsive {
+                font-size: 0.8rem;
+            }
+            
+            .table th, .table td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.8rem;
+            }
+
+            .pos-container {
+                grid-template-columns: 1fr;
+            }
+
+            .side-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+        }
+
+        @media (max-width: 576px) {
+            .content-area {
+                padding: 0.75rem;
+            }
+            
+            .card-header {
+                padding: 1rem 1.25rem;
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .card-header h3 {
+                font-size: 1.1rem;
+            }
+            
+            .stat-card {
+                padding: 1.25rem;
+            }
+            
+            .stat-content h3 {
+                font-size: 1.75rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .d-flex { display: flex; }
+        .align-items-center { align-items: center; }
+        .justify-content-between { justify-content: space-between; }
+        .gap-3 { gap: 1rem; }
+        .w-100 { width: 100%; }
+        .mb-0 { margin-bottom: 0; }
+        .mb-3 { margin-bottom: 1rem; }
+        .mb-4 { margin-bottom: 1.5rem; }
+        .mt-3 { margin-top: 1rem; }
+        .me-1 { margin-right: 0.25rem; }
+        .me-2 { margin-right: 0.5rem; }
+        .ms-2 { margin-left: 0.5rem; }
+        .small { font-size: 0.875rem; }
+        .fw-bold { font-weight: 600; }
+
+        /* Grid System */
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -0.75rem;
+        }
+
+        .col-lg-8 {
+            flex: 0 0 66.667%;
+            max-width: 66.667%;
+            padding: 0 0.75rem;
+        }
+
+        .col-lg-4 {
+            flex: 0 0 33.333%;
+            max-width: 33.333%;
+            padding: 0 0.75rem;
+        }
+
+        /* Table Responsive */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Compact user table styles */
+        .user-table-compact .table th,
+        .user-table-compact .table td {
+            padding: 0.75rem 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .user-avatar-xs {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            overflow: hidden;
+        }
+
+        .user-avatar-xs img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Profile Picture Upload */
+        .profile-picture-upload {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1rem;
+        }
+
+        .profile-picture {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+        }
+
+        .profile-picture-upload-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Search Box */
+        .search-box {
+            max-width: 300px;
+        }
+
+        /* Status Badges */
+        .status-pending {
+            background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+        }
+
+        .status-blocked {
+            background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-content">
+                <!-- Sidebar Header -->
+                <div class="sidebar-header">
+                    <div class="brand">
+                        <div class="brand-icon">
+                            <i class="fas fa-compact-disc"></i>
+                        </div>
+                        <div class="brand-text">DISC SALES</div>
+                    </div>
+                </div>
+
+                <!-- User Welcome -->
+                <div class="user-welcome">
+                    <div class="user-avatar" id="sidebarUserAvatar">
+                        <i class="fas fa-user" id="sidebarUserIcon"></i>
+                    </div>
+                    <h4 id="sidebarUserName">Karibu!</h4>
+                    <p id="sidebarUserRole">Mfumo wa Mauzo</p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="sidebar-nav">
+                    <div class="nav-section-title">Menyu Kuu</div>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a class="nav-link active" onclick="showSection('dashboard')">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>Dashibodi</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="showSection('products')">
+                                <i class="fas fa-boxes"></i>
+                                <span>Bidhaa</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="showSection('sales')">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Mauzo</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="showSection('pos')">
+                                <i class="fas fa-cash-register"></i>
+                                <span>POS</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" id="adminMenuItem" style="display: none;">
+                            <a class="nav-link" onclick="showSection('users')">
+                                <i class="fas fa-users-cog"></i>
+                                <span>Watumiaji</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="nav-section-title">Takwimu za Leo</div>
+                    <div class="quick-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Mauzo ya Leo</span>
+                            <span class="stat-value text-success" id="todaySales">Tsh 0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Bidhaa</span>
+                            <span class="stat-value text-primary" id="totalProducts">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Stock Duni</span>
+                            <span class="stat-value text-warning" id="lowStockCount">0</span>
+                        </div>
+                    </div>
+
+                    <div class="nav-section-title">Zingine</div>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="showSection('settings')">
+                                <i class="fas fa-cog"></i>
+                                <span>Mipangilio</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Toka</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Navigation -->
+            <nav class="top-nav">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="page-title">
+                        <h1 id="pageTitle">Dashibodi</h1>
+                        <p id="dashboardGreeting">Karibu tena kwenye mfumo wa mauzo</p>
+                    </div>
+                </div>
+                
+                <div class="d-flex align-items-center gap-3">
+                    <button class="theme-toggle" id="themeToggle" title="Badilisha Mwanga/Kiza">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    
+                    <div class="user-menu" id="userMenu">
+                        <div class="user-avatar-sm" id="userAvatarSm">
+                            <i class="fas fa-user" id="userAvatarIcon"></i>
+                        </div>
+                        <div class="user-info-sm">
+                            <div class="user-name" id="pageUserName">User</div>
+                            <div class="user-role" id="pageUserRole">Role</div>
+                        </div>
+                        <div class="user-dropdown" id="userDropdown">
+                            <button class="dropdown-item" onclick="showSection('profile')">
+                                <i class="fas fa-user"></i>
+                                Wasifu Wangu
+                            </button>
+                            <button class="dropdown-item" onclick="showSection('settings')">
+                                <i class="fas fa-cog"></i>
+                                Mipangilio
+                            </button>
+                            <button class="dropdown-item" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Toka
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="content-section active">
+                    <!-- IMPROVED DASHBOARD LAYOUT -->
+                    <div class="dashboard-main">
+                        <!-- Main Content Area -->
+                        <div class="dashboard-content">
+                            <!-- Stats Grid -->
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-header">
+                                        <div class="stat-content">
+                                            <h3 id="statSales">Tsh 0</h3>
+                                            <p>Mauzo ya Leo</p>
+                                            <div class="stat-trend" id="salesTrend">
+                                                <span>0%</span> kutoka jana
+                                            </div>
+                                        </div>
+                                        <div class="stat-icon">
+                                            <i class="fas fa-money-bill-wave"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="stat-card">
+                                    <div class="stat-header">
+                                        <div class="stat-content">
+                                            <h3 id="statProducts">0</h3>
+                                            <p>Jumla ya Bidhaa</p>
+                                            <div class="stat-trend">
+                                                <span id="activeProducts">0</span> bidhaa aktiv
+                                            </div>
+                                        </div>
+                                        <div class="stat-icon">
+                                            <i class="fas fa-boxes"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="stat-card">
+                                    <div class="stat-header">
+                                        <div class="stat-content">
+                                            <h3 id="statLowStock">0</h3>
+                                            <p>Stock Duni</p>
+                                            <div class="stat-trend trend-down">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                                Inahitaji umakini
+                                            </div>
+                                        </div>
+                                        <div class="stat-icon">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="stat-card">
+                                    <div class="stat-header">
+                                        <div class="stat-content">
+                                            <h3 id="statTotalStock">0</h3>
+                                            <p>Jumla ya Stock</p>
+                                            <div class="stat-trend">
+                                                Thamani ya jumla
+                                            </div>
+                                        </div>
+                                        <div class="stat-icon">
+                                            <i class="fas fa-warehouse"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recent Sales Card -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3><i class="fas fa-history me-2 text-primary"></i>Mauzo ya Hivi Karibuni</h3>
+                                    <button class="btn btn-primary btn-sm" onclick="showSection('sales')">
+                                        <i class="fas fa-eye me-1"></i>Angalia Yote
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Kiasi</th>
+                                                    <th>Mtumiaji</th>
+                                                    <th>Tarehe</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="recentSalesTableBody">
+                                                <!-- Recent sales will be loaded here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Side Panel -->
+                        <div class="side-panel">
+                            <!-- Quick Actions Panel -->
+                            <div class="quick-actions-panel">
+                                <div class="panel-header">
+                                    <i class="fas fa-bolt"></i>
+                                    <h3>Vitendo Vya Haraka</h3>
+                                </div>
+                                <div class="quick-actions-grid">
+                                    <div class="action-card" onclick="showSection('pos')">
+                                        <div class="action-icon">
+                                            <i class="fas fa-cash-register"></i>
+                                        </div>
+                                        <h4>Fungua POS</h4>
+                                        <p>Anza mauzo mapya</p>
+                                    </div>
+                                    
+                                    <div class="action-card" onclick="showAddProductModal()">
+                                        <div class="action-icon">
+                                            <i class="fas fa-plus"></i>
+                                        </div>
+                                        <h4>Ongeza Bidhaa</h4>
+                                        <p>Bidhaa mpya kwenye mfumo</p>
+                                    </div>
+                                    
+                                    <div class="action-card" onclick="generateDailyReport()">
+                                        <div class="action-icon">
+                                            <i class="fas fa-print"></i>
+                                        </div>
+                                        <h4>Ripoti ya Leo</h4>
+                                        <p>Toa ripoti ya mauzo ya leo</p>
+                                    </div>
+
+                                    <div class="action-card" id="manageUsersAction" style="display: none;" onclick="showSection('users')">
+                                        <div class="action-icon">
+                                            <i class="fas fa-users-cog"></i>
+                                        </div>
+                                        <h4>Watumiaji</h4>
+                                        <p>Simamia watumiaji wa mfumo</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Urgent Alerts Panel -->
+                            <div class="alerts-panel">
+                                <div class="panel-header">
+                                    <i class="fas fa-bell"></i>
+                                    <h3>Taarifa Muhimu</h3>
+                                </div>
+                                <div class="alerts-list" id="alertsList">
+                                    <!-- Alerts will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Products Section -->
+                <section id="products" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-boxes me-2"></i>Usimamizi wa Bidhaa</h3>
+                            <div class="d-flex gap-2">
+                                <div class="search-box">
+                                    <input type="text" class="form-control form-control-sm" placeholder="Tafuta bidhaa..." id="productSearch" onkeyup="searchProducts()">
+                                </div>
+                                <button class="btn btn-primary" onclick="showAddProductModal()">
+                                    <i class="fas fa-plus me-1"></i>Ongeza Bidhaa Mpya
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Jina</th>
+                                            <th>Aina</th>
+                                            <th>Bei ya Kununulia</th>
+                                            <th>Bei ya Kuuza</th>
+                                            <th>Stock</th>
+                                            <th>Status</th>
+                                            <th>Vitendo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="productsTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sales Section -->
+                <section id="sales" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-shopping-cart me-2"></i>Historia ya Mauzo</h3>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-success" onclick="generateSalesReport()">
+                                    <i class="fas fa-file-pdf me-1"></i>Ripoti ya Mauzo
+                                </button>
+                                <button class="btn btn-primary" onclick="downloadSalesReport()">
+                                    <i class="fas fa-download me-1"></i>Pakua Ripoti
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Tarehe</th>
+                                            <th>Mteja</th>
+                                            <th>Bidhaa</th>
+                                            <th>Kiasi</th>
+                                            <th>Jumla</th>
+                                            <th>Status</th>
+                                            <th>Vitendo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="salesTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- POS Section -->
+                <section id="pos" class="content-section">
+                    <div class="pos-container">
+                        <!-- Products Section -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-boxes me-2"></i>Bidhaa Zote</h3>
+                                <div class="d-flex gap-2">
+                                    <input type="text" class="form-control form-control-sm" placeholder="Tafuta bidhaa..." id="posProductSearch" onkeyup="searchPOSProducts()">
+                                    <button class="btn btn-primary btn-sm" onclick="showAddProductModal()">
+                                        <i class="fas fa-plus me-1"></i>Ongeza
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="products-grid" id="productsGrid">
+                                    <!-- Products will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Cart Section -->
+                        <div class="card cart-section">
+                            <div class="card-header">
+                                <h3><i class="fas fa-shopping-basket me-2"></i>Karatasi ya Mauzo</h3>
+                                <button class="btn btn-outline-danger btn-sm" onclick="clearCart()">
+                                    <i class="fas fa-trash me-1"></i>Futa Yote
+                                </button>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="cart-content">
+                                    <div id="cartItems" class="cart-items">
+                                        <div class="empty-cart text-center py-5">
+                                            <i class="fas fa-shopping-basket fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted">Hakuna bidhaa kwenye karatasi</p>
+                                            <small class="text-muted">Bofya kwenye bidhaa kuongeza kwenye karatasi</small>
+                                        </div>
+                                    </div>
+                                    <div class="cart-summary p-3 border-top">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>Jumla ya Bidhaa:</span>
+                                            <strong id="cartItemCount">0</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="fs-5">Jumla:</span>
+                                            <strong class="fs-4 text-success" id="cartTotal">Tsh 0</strong>
+                                        </div>
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-primary btn-lg" onclick="processPayment()">
+                                                <i class="fas fa-credit-card me-2"></i>LIPA SASA
+                                            </button>
+                                            <button class="btn btn-success" onclick="completeSale()">
+                                                <i class="fas fa-check me-2"></i>MALIZA MAUZO
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Users Management Section -->
+                <section id="users" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-users-cog me-2"></i>Usimamizi wa Watumiaji</h3>
+                            <button class="btn btn-primary" onclick="showAddUserModal()">
+                                <i class="fas fa-user-plus me-1"></i>Ongeza Mtumiaji
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive user-table-compact">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Jina Kamili</th>
+                                            <th>Email</th>
+                                            <th>Cheo</th>
+                                            <th>Status</th>
+                                            <th>Tarehe ya Kujiunga</th>
+                                            <th>Mara ya Mwisho</th>
+                                            <th>Vitendo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="usersTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Profile Section -->
+                <section id="profile" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-user me-2"></i>Wasifu Wangu</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 text-center mb-4">
+                                    <div class="profile-picture-upload">
+                                        <img id="profilePicture" class="profile-picture" src="" alt="Profile Picture">
+                                        <button class="profile-picture-upload-btn" onclick="document.getElementById('profilePictureInput').click()">
+                                            <i class="fas fa-camera"></i>
+                                        </button>
+                                        <input type="file" id="profilePictureInput" accept="image/*" style="display: none;" onchange="uploadProfilePicture(this)">
+                                    </div>
+                                    <h4 id="profileUserName" class="mt-2">User Name</h4>
+                                    <p id="profileUserRole" class="text-muted">User Role</p>
+                                </div>
+                                <div class="col-md-8">
+                                    <form id="profileForm">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Jina Kamili</label>
+                                                    <input type="text" class="form-control" id="profileFullName" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Barua Pepe</label>
+                                                    <input type="email" class="form-control" id="profileEmail" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Biografia</label>
+                                            <textarea class="form-control" id="profileBio" rows="4" placeholder="Andika kuhusu wewe..."></textarea>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Nenosiri Jipya</label>
+                                                    <input type="password" class="form-control" id="profileNewPassword" placeholder="Acha wazi kama hutaki kubadilisha">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Thibitisha Nenosiri</label>
+                                                    <input type="password" class="form-control" id="profileConfirmPassword">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-primary" onclick="updateProfile()">
+                                            <i class="fas fa-save me-1"></i>Hifadhi Mabadiliko
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settings" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-cog me-2"></i>Mipangilio</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5 class="mb-3">Mpangilio wa Muonekano</h5>
+                                    <div class="mb-3">
+                                        <label class="form-label">Wazo la Mwanga</label>
+                                        <select class="form-control" id="themeSetting" onchange="changeTheme(this.value)">
+                                            <option value="light">Mwanga</option>
+                                            <option value="dark">Kiza</option>
+                                            <option value="auto">Otomatiki</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Lugha</label>
+                                        <select class="form-control" id="languageSetting">
+                                            <option value="sw">Kiswahili</option>
+                                            <option value="en">English</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5 class="mb-3">Mipangilio ya Mfumo</h5>
+                                    <div class="mb-3">
+                                        <label class="form-label">Taarifa za Biashara</label>
+                                        <input type="text" class="form-control" id="businessName" placeholder="Jina la Biashara">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Anwani ya Biashara</label>
+                                        <textarea class="form-control" id="businessAddress" rows="2" placeholder="Anwani ya biashara"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Nambari ya Simu</label>
+                                        <input type="text" class="form-control" id="businessPhone" placeholder="Nambari ya simu">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <button class="btn btn-primary" onclick="saveSettings()">
+                                    <i class="fas fa-save me-1"></i>Hifadhi Mipangilio
+                                </button>
+                                <button class="btn btn-outline-secondary ms-2" onclick="resetSettings()">
+                                    <i class="fas fa-undo me-1"></i>Rudisha Mipangilio
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div class="modal fade" id="addProductModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ongeza Bidhaa Mpya</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addProductForm">
+                        <div class="mb-3">
+                            <label class="form-label">Jina la Bidhaa</label>
+                            <input type="text" class="form-control" id="productName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Aina</label>
+                            <select class="form-control" id="productCategory" required>
+                                <option value="">Chagua aina</option>
+                                <option value="nene">Cutting Disc Nene</option>
+                                <option value="nyembamba">Cutting Disc Nyembamba</option>
+                                <option value="grinding">Grinding Disc</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Bei ya Kununulia (Tsh)</label>
+                                    <input type="number" class="form-control" id="purchasePrice" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Bei ya Kuuza (Tsh)</label>
+                                    <input type="number" class="form-control" id="sellingPrice" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Idadi ya Stock</label>
+                            <input type="number" class="form-control" id="stockQuantity" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Funga</button>
+                    <button type="button" class="btn btn-primary" onclick="saveProduct()">Hifadhi Bidhaa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ongeza Mtumiaji Mpya</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addUserForm">
+                        <div class="mb-3">
+                            <label class="form-label">Jina Kamili</label>
+                            <input type="text" class="form-control" id="userFullName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Barua Pepe</label>
+                            <input type="email" class="form-control" id="userEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Neno la Siri</label>
+                            <input type="password" class="form-control" id="userPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cheo</label>
+                            <select class="form-control" id="userRole" required>
+                                <option value="">Chagua cheo</option>
+                                <option value="cashier">Keshia</option>
+                                <option value="admin">Msimamizi</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Biografia</label>
+                            <textarea class="form-control" id="userBio" rows="3" placeholder="Andika kuhusu mtumiaji..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Funga</button>
+                    <button type="button" class="btn btn-primary" onclick="saveUser()">Hifadhi Mtumiaji</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div class="modal fade" id="receiptModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Risiti ya Mauzo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="receipt-container" id="receiptContent">
+                        <!-- Receipt content will be generated here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Funga</button>
+                    <button type="button" class="btn btn-primary" onclick="printReceipt()">
+                        <i class="fas fa-print me-1"></i>Print Risiti
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportModalTitle">Ripoti ya Mauzo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="report-container" id="reportContent">
+                        <!-- Report content will be generated here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Funga</button>
+                    <button type="button" class="btn btn-primary" onclick="printReport()">
+                        <i class="fas fa-print me-1"></i>Print Ripoti
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="downloadReport()">
+                        <i class="fas fa-download me-1"></i>Pakua PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample data storage
+        let products = JSON.parse(localStorage.getItem('products')) || [
+            {
+                id: 1,
+                name: 'Cutting Disc Nene',
+                category: 'nene',
+                purchasePrice: 5000,
+                sellingPrice: 8000,
+                stock: 25,
+                status: 'active'
+            },
+            {
+                id: 2,
+                name: 'Cutting Disc Nyembamba',
+                category: 'nyembamba',
+                purchasePrice: 3000,
+                sellingPrice: 5000,
+                stock: 3,
+                status: 'active'
+            }
+        ];
+
+        let sales = JSON.parse(localStorage.getItem('sales')) || [];
+        let cart = [];
+        let settings = JSON.parse(localStorage.getItem('settings')) || {
+            theme: 'light',
+            language: 'sw',
+            businessName: 'Disc Sales Shop',
+            businessAddress: 'Dar es Salaam, Tanzania',
+            businessPhone: '+255 123 456 789'
+        };
+
+        // DEMO ACCOUNTS - HII NDIO MUHIMU
+        let users = JSON.parse(localStorage.getItem('users'));
+        if (!users || users.length === 0) {
+            users = [
+                {
+                    id: 1,
+                    full_name: 'Super Administrator',
+                    email: 'admin@discsales.com',
+                    password: 'admin123',
+                    role: 'superadmin',
+                    status: 'active',
+                    bio: 'Msimamizi mkuu wa mfumo wa Disc Sales',
+                    profile_picture: '',
+                    created_at: '2024-01-01',
+                    last_login: '2024-11-23'
+                },
+                {
+                    id: 2,
+                    full_name: 'Cashier User',
+                    email: 'cashier@discsales.com',
+                    password: 'cashier123',
+                    role: 'cashier',
+                    status: 'active',
+                    bio: 'Keshia wa mfumo wa Disc Sales',
+                    profile_picture: '',
+                    created_at: '2024-02-15',
+                    last_login: '2024-11-22'
+                }
+            ];
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = localStorage.getItem('currentUser');
+            const token = localStorage.getItem('token');
+            
+            // Redirect to login if not authenticated
+            if (!currentUser || !token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Hakikisha demo accounts zipo
+            const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
+            if (existingUsers.length === 0) {
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+
+            // Apply saved theme
+            applyTheme(settings.theme);
+            
+            initializeUserData();
+            initializeSampleData();
+            loadProducts();
+            loadSales();
+            loadUsers();
+            loadRecentSales();
+            loadAlerts();
+            setupEventListeners();
+            checkAdminPermissions();
+            updateDashboardStats();
+        });
+
+        function initializeUserData() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.id === currentUser.id) || currentUser;
+            
+            // Update sidebar
+            document.getElementById('sidebarUserName').textContent = `Karibu, ${user.full_name || 'User'}!`;
+            document.getElementById('pageUserName').textContent = user.full_name || 'User';
+            
+            // Update profile picture
+            updateProfilePicture(user);
+            
+            const roleNames = {
+                'superadmin': 'Msimamizi Mkuu',
+                'admin': 'Msimamizi',
+                'cashier': 'Keshia'
+            };
+            document.getElementById('sidebarUserRole').textContent = roleNames[user.role] || 'User';
+            document.getElementById('pageUserRole').textContent = roleNames[user.role] || 'User';
+
+            // Set greeting
+            const hour = new Date().getHours();
+            let greeting = `Habari za Asubuhi`;
+            if (hour >= 12 && hour < 17) {
+                greeting = `Habari za Mchana`;
+            } else if (hour >= 17) {
+                greeting = `Habari za Jioni`;
+            }
+            document.getElementById('dashboardGreeting').innerHTML = `<strong>${greeting}!</strong> Karibu tena kwenye mfumo wa mauzo`;
+
+            // Load profile data
+            if (user) {
+                document.getElementById('profileFullName').value = user.full_name || '';
+                document.getElementById('profileEmail').value = user.email || '';
+                document.getElementById('profileBio').value = user.bio || '';
+                document.getElementById('profileUserName').textContent = user.full_name || '';
+                document.getElementById('profileUserRole').textContent = roleNames[user.role] || 'User';
+            }
+        }
+
+        function updateProfilePicture(user) {
+            const sidebarAvatar = document.getElementById('sidebarUserAvatar');
+            const pageAvatar = document.getElementById('userAvatarSm');
+            const profilePicture = document.getElementById('profilePicture');
+            const sidebarIcon = document.getElementById('sidebarUserIcon');
+            const pageIcon = document.getElementById('userAvatarIcon');
+            
+            if (user.profile_picture) {
+                sidebarAvatar.innerHTML = `<img src="${user.profile_picture}" alt="Profile">`;
+                pageAvatar.innerHTML = `<img src="${user.profile_picture}" alt="Profile">`;
+                profilePicture.src = user.profile_picture;
+                sidebarIcon.style.display = 'none';
+                pageIcon.style.display = 'none';
+            } else {
+                sidebarAvatar.innerHTML = '<i class="fas fa-user" id="sidebarUserIcon"></i>';
+                pageAvatar.innerHTML = '<i class="fas fa-user" id="userAvatarIcon"></i>';
+                profilePicture.src = '';
+                sidebarIcon.style.display = 'flex';
+                pageIcon.style.display = 'flex';
+            }
+        }
+
+        function uploadProfilePicture(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                    const users = JSON.parse(localStorage.getItem('users') || '[]');
+                    
+                    // Update user profile picture
+                    const userIndex = users.findIndex(u => u.id === currentUser.id);
+                    if (userIndex !== -1) {
+                        users[userIndex].profile_picture = e.target.result;
+                        localStorage.setItem('users', JSON.stringify(users));
+                        
+                        // Update current user
+                        currentUser.profile_picture = e.target.result;
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        
+                        // Update UI
+                        updateProfilePicture(currentUser);
+                        showToast('Picha ya wasifu imesasishwa!', 'success');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateProfile() {
+            const fullName = document.getElementById('profileFullName').value;
+            const email = document.getElementById('profileEmail').value;
+            const bio = document.getElementById('profileBio').value;
+            const newPassword = document.getElementById('profileNewPassword').value;
+            const confirmPassword = document.getElementById('profileConfirmPassword').value;
+            
+            if (newPassword && newPassword !== confirmPassword) {
+                showToast('Nenosiri halifanani!', 'error');
+                return;
+            }
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex].full_name = fullName;
+                users[userIndex].email = email;
+                users[userIndex].bio = bio;
+                
+                if (newPassword) {
+                    users[userIndex].password = newPassword;
+                }
+                
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                // Update current user
+                currentUser.full_name = fullName;
+                currentUser.email = email;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
+                // Update UI
+                initializeUserData();
+                showToast('Wasifu umehakikishiwa kikamilifu!', 'success');
+            }
+        }
+
+        function checkAdminPermissions() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const isAdmin = currentUser.role === 'admin' || currentUser.role === 'superadmin';
+            
+            if (isAdmin) {
+                document.getElementById('adminMenuItem').style.display = 'block';
+                document.getElementById('manageUsersAction').style.display = 'block';
+                
+                // Show admin badge
+                const userRoleElement = document.getElementById('pageUserRole');
+                if (currentUser.role === 'superadmin') {
+                    userRoleElement.innerHTML = 'Msimamizi Mkuu <span class="badge bg-danger ms-1">Super Admin</span>';
+                } else {
+                    userRoleElement.innerHTML = 'Msimamizi <span class="badge bg-primary ms-1">Admin</span>';
+                }
+            }
+        }
+
+        function initializeSampleData() {
+            updateDashboardStats();
+        }
+
+        function updateDashboardStats() {
+            const today = new Date().toLocaleDateString('en-CA');
+            const todaySales = sales.filter(s => s.date === today);
+            const totalTodaySales = todaySales.reduce((sum, sale) => sum + sale.total, 0);
+            
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toLocaleDateString('en-CA');
+            const yesterdaySales = sales.filter(s => s.date === yesterdayStr);
+            const totalYesterdaySales = yesterdaySales.reduce((sum, sale) => sum + sale.total, 0);
+            
+            // Calculate sales trend
+            let salesTrend = 0;
+            if (totalYesterdaySales > 0) {
+                salesTrend = ((totalTodaySales - totalYesterdaySales) / totalYesterdaySales) * 100;
+            }
+            
+            const lowStockProducts = products.filter(p => p.stock < 5);
+            const totalStock = products.reduce((sum, p) => sum + p.stock, 0);
+            const activeProducts = products.filter(p => p.status === 'active').length;
+            
+            // Update dashboard stats
+            document.getElementById('todaySales').textContent = `Tsh ${totalTodaySales.toLocaleString()}`;
+            document.getElementById('totalProducts').textContent = products.length.toString();
+            document.getElementById('lowStockCount').textContent = lowStockProducts.length.toString();
+            
+            document.getElementById('statSales').textContent = `Tsh ${totalTodaySales.toLocaleString()}`;
+            document.getElementById('statProducts').textContent = products.length.toString();
+            document.getElementById('statLowStock').textContent = lowStockProducts.length.toString();
+            document.getElementById('statTotalStock').textContent = totalStock.toString();
+            document.getElementById('activeProducts').textContent = activeProducts.toString();
+            
+            // Update sales trend
+            const salesTrendElement = document.getElementById('salesTrend');
+            if (salesTrend > 0) {
+                salesTrendElement.innerHTML = `<i class="fas fa-arrow-up me-1"></i><span>${salesTrend.toFixed(1)}%</span> kutoka jana`;
+                salesTrendElement.className = 'stat-trend trend-up';
+            } else if (salesTrend < 0) {
+                salesTrendElement.innerHTML = `<i class="fas fa-arrow-down me-1"></i><span>${Math.abs(salesTrend).toFixed(1)}%</span> kutoka jana`;
+                salesTrendElement.className = 'stat-trend trend-down';
+            } else {
+                salesTrendElement.innerHTML = `<span>Hakuna mabadiliko</span> kutoka jana`;
+                salesTrendElement.className = 'stat-trend';
+            }
+        }
+
+        function loadRecentSales() {
+            const tbody = document.getElementById('recentSalesTableBody');
+            tbody.innerHTML = '';
+            
+            // Get recent sales (last 5)
+            const recentSales = sales.slice(-5).reverse();
+            
+            if (recentSales.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            Hakuna mauzo bado. Anza mauzo kwenye POS.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            recentSales.forEach(sale => {
+                const row = `
+                    <tr>
+                        <td><strong>#${sale.id.toString().padStart(3, '0')}</strong></td>
+                        <td>${sale.items.reduce((sum, item) => sum + item.quantity, 0)}</td>
+                        <td>${sale.customer}</td>
+                        <td>${sale.date}</td>
+                        <td><span class="badge bg-success">Completed</span></td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function loadAlerts() {
+            const alertsList = document.getElementById('alertsList');
+            alertsList.innerHTML = '';
+            
+            const lowStockProducts = products.filter(p => p.stock < 5);
+            
+            if (lowStockProducts.length > 0) {
+                const alertItem = `
+                    <div class="alert-item">
+                        <div class="alert-icon warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h5>Stock Duni!</h5>
+                            <p>Bidhaa ${lowStockProducts.length} zina stock duni</p>
+                        </div>
+                    </div>
+                `;
+                alertsList.innerHTML += alertItem;
+            }
+            
+            const today = new Date().toLocaleDateString('en-CA');
+            const todaySales = sales.filter(s => s.date === today);
+            
+            if (todaySales.length > 0) {
+                const alertItem = `
+                    <div class="alert-item">
+                        <div class="alert-icon success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h5>Mauzo Yanaendelea Vizuri</h5>
+                            <p>Mauzo ${todaySales.length} leo, jumla Tsh ${todaySales.reduce((sum, s) => sum + s.total, 0).toLocaleString()}</p>
+                        </div>
+                    </div>
+                `;
+                alertsList.innerHTML += alertItem;
+            }
+            
+            // Check for pending users
+            const pendingUsers = users.filter(u => u.status === 'pending');
+            if (pendingUsers.length > 0) {
+                const alertItem = `
+                    <div class="alert-item">
+                        <div class="alert-icon warning">
+                            <i class="fas fa-user-clock"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h5>Watumiaji Wanasubiri Idhini</h5>
+                            <p>Watumiaji ${pendingUsers.length} wanasubiri kuidhinishwa</p>
+                        </div>
+                    </div>
+                `;
+                alertsList.innerHTML += alertItem;
+            }
+            
+            // Always show system ready alert
+            const alertItem = `
+                <div class="alert-item">
+                    <div class="alert-icon success">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="alert-content">
+                        <h5>Mfumo Uko Tayari</h5>
+                        <p>Mfumo unafanya kazi kikamilifu</p>
+                    </div>
+                </div>
+            `;
+            alertsList.innerHTML += alertItem;
+        }
+
+        function setupEventListeners() {
+            // Mobile menu
+            document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+                document.getElementById('sidebar').classList.toggle('mobile-open');
+            });
+
+            // User dropdown
+            document.getElementById('userMenu').addEventListener('click', function(e) {
+                e.stopPropagation();
+                document.getElementById('userDropdown').classList.toggle('show');
+            });
+
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                changeTheme(newTheme);
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function() {
+                document.getElementById('userDropdown').classList.remove('show');
+            });
+
+            // Close sidebar when clicking on mobile
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth < 768 && 
+                    !document.getElementById('sidebar').contains(e.target) &&
+                    !document.getElementById('mobileMenuBtn').contains(e.target)) {
+                    document.getElementById('sidebar').classList.remove('mobile-open');
+                }
+            });
+        }
+
+        function changeTheme(theme) {
+            if (theme === 'auto') {
+                // Check system preference
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                }
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+            
+            // Update theme toggle icon
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const themeToggle = document.getElementById('themeToggle');
+            if (currentTheme === 'dark') {
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+            
+            // Save theme setting
+            settings.theme = theme;
+            localStorage.setItem('settings', JSON.stringify(settings));
+        }
+
+        function applyTheme(theme) {
+            document.getElementById('themeSetting').value = theme;
+            changeTheme(theme);
+        }
+
+        function saveSettings() {
+            settings.theme = document.getElementById('themeSetting').value;
+            settings.language = document.getElementById('languageSetting').value;
+            settings.businessName = document.getElementById('businessName').value;
+            settings.businessAddress = document.getElementById('businessAddress').value;
+            settings.businessPhone = document.getElementById('businessPhone').value;
+            
+            localStorage.setItem('settings', JSON.stringify(settings));
+            showToast('Mipangilio imehifadhiwa!', 'success');
+        }
+
+        function resetSettings() {
+            document.getElementById('themeSetting').value = 'light';
+            document.getElementById('languageSetting').value = 'sw';
+            document.getElementById('businessName').value = 'Disc Sales Shop';
+            document.getElementById('businessAddress').value = 'Dar es Salaam, Tanzania';
+            document.getElementById('businessPhone').value = '+255 123 456 789';
+            
+            showToast('Mipangilio yamerudishwa!', 'info');
+        }
+
+        // Section navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            const section = document.getElementById(sectionId);
+            section.classList.add('active');
+            
+            // Add loading state for sections that need data
+            if (sectionId === 'pos') {
+                loadPOSProducts();
+            }
+            
+            // Add active class to clicked nav link
+            const navLink = document.querySelector(`[onclick="showSection('${sectionId}')"]`);
+            if (navLink) {
+                navLink.classList.add('active');
+            }
+            
+            // Update page title
+            const titles = {
+                'dashboard': 'Dashibodi',
+                'products': 'Usimamizi wa Bidhaa',
+                'sales': 'Historia ya Mauzo',
+                'pos': 'Point of Sale (POS)',
+                'users': 'Usimamizi wa Watumiaji',
+                'profile': 'Wasifu Wangu',
+                'settings': 'Mipangilio'
+            };
+            document.getElementById('pageTitle').textContent = titles[sectionId] || 'Dashibodi';
+            
+            // Close mobile menu
+            document.getElementById('sidebar').classList.remove('mobile-open');
+        }
+
+        // Product Management
+        function loadProducts() {
+            const tbody = document.getElementById('productsTableBody');
+            tbody.innerHTML = '';
+            
+            products.forEach(product => {
+                const statusClass = product.stock < 5 ? 'bg-warning' : 'bg-success';
+                const statusText = product.stock < 5 ? 'Low Stock' : 'In Stock';
+                const categoryNames = {
+                    'nene': 'nene',
+                    'nyembamba': 'nyembamba',
+                    'grinding': 'grinding'
+                };
+                
+                const row = `
+                    <tr>
+                        <td>${product.name}</td>
+                        <td><span class="badge bg-primary">${categoryNames[product.category]}</span></td>
+                        <td>Tsh ${product.purchasePrice.toLocaleString()}</td>
+                        <td>Tsh ${product.sellingPrice.toLocaleString()}</td>
+                        <td>${product.stock}</td>
+                        <td><span class="badge ${statusClass}">${statusText}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary me-1" onclick="editProduct(${product.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteProduct(${product.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function searchProducts() {
+            const searchTerm = document.getElementById('productSearch').value.toLowerCase();
+            const rows = document.getElementById('productsTableBody').getElementsByTagName('tr');
+            
+            for (let i = 0; i < rows.length; i++) {
+                const productName = rows[i].getElementsByTagName('td')[0].textContent.toLowerCase();
+                if (productName.includes(searchTerm)) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        }
+
+        function showAddProductModal() {
+            const modal = new bootstrap.Modal(document.getElementById('addProductModal'));
+            document.getElementById('addProductForm').reset();
+            modal.show();
+        }
+
+        function saveProduct() {
+            const product = {
+                id: products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1,
+                name: document.getElementById('productName').value,
+                category: document.getElementById('productCategory').value,
+                purchasePrice: parseInt(document.getElementById('purchasePrice').value),
+                sellingPrice: parseInt(document.getElementById('sellingPrice').value),
+                stock: parseInt(document.getElementById('stockQuantity').value),
+                status: 'active'
+            };
+            
+            products.push(product);
+            localStorage.setItem('products', JSON.stringify(products));
+            
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'));
+            modal.hide();
+            
+            loadProducts();
+            updateDashboardStats();
+            loadAlerts();
+            showToast('Bidhaa imehifadhiwa kikamilifu!', 'success');
+        }
+
+        function editProduct(id) {
+            showToast(`📝 Badilisha bidhaa na ID: ${id} (Feature iko kwenye maendeleo)`, 'info');
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Unahakika unataka kufuta bidhaa hii?')) {
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('products', JSON.stringify(products));
+                loadProducts();
+                updateDashboardStats();
+                loadAlerts();
+                showToast('Bidhaa imefutwa!', 'success');
+            }
+        }
+
+        // Sales Management
+        function loadSales() {
+            const tbody = document.getElementById('salesTableBody');
+            tbody.innerHTML = '';
+            
+            if (sales.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">
+                            Hakuna mauzo bado. Anza mauzo kwenye POS.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const isAdmin = currentUser.role === 'admin' || currentUser.role === 'superadmin';
+            
+            sales.forEach(sale => {
+                const deleteButton = isAdmin ? `
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteSale(${sale.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                ` : '';
+                
+                const row = `
+                    <tr>
+                        <td><strong>#${sale.id.toString().padStart(3, '0')}</strong></td>
+                        <td>${sale.date}</td>
+                        <td>${sale.customer}</td>
+                        <td>${sale.items.length} bidhaa</td>
+                        <td>${sale.items.reduce((sum, item) => sum + item.quantity, 0)}</td>
+                        <td class="fw-bold text-success">Tsh ${sale.total.toLocaleString()}</td>
+                        <td><span class="badge bg-success">Completed</span></td>
+                        <td>${deleteButton}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function deleteSale(saleId) {
+            if (confirm('Unahakika unataka kufuta mauzo haya? Hatua hii haiwezi kutenduliwa.')) {
+                // Restore product stocks
+                const sale = sales.find(s => s.id === saleId);
+                if (sale) {
+                    sale.items.forEach(saleItem => {
+                        const product = products.find(p => p.id === saleItem.id);
+                        if (product) {
+                            product.stock += saleItem.quantity;
+                        }
+                    });
+                }
+                
+                sales = sales.filter(s => s.id !== saleId);
+                localStorage.setItem('sales', JSON.stringify(sales));
+                localStorage.setItem('products', JSON.stringify(products));
+                
+                loadSales();
+                loadProducts();
+                updateDashboardStats();
+                loadRecentSales();
+                showToast('Mauzo yamefutwa!', 'success');
+            }
+        }
+
+        function downloadSalesReport() {
+            // Create CSV content
+            let csvContent = "ID,Tarehe,Mteja,Bidhaa,Kiasi,Jumla\n";
+            
+            sales.forEach(sale => {
+                const itemsCount = sale.items.reduce((sum, item) => sum + item.quantity, 0);
+                csvContent += `#${sale.id.toString().padStart(3, '0')},${sale.date},${sale.customer},${sale.items.length} bidhaa,${itemsCount},Tsh ${sale.total}\n`;
+            });
+            
+            // Create and download file
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `mauzo_report_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            showToast('Ripoti ya mauzo imepakuliwa!', 'success');
+        }
+
+        // POS Functionality
+        function loadPOSProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            
+            products.forEach(product => {
+                const stockClass = product.stock < 5 ? 'low-stock' : 'stock';
+                const stockText = product.stock < 5 ? `Stock: ${product.stock} (DUNI)` : `Stock: ${product.stock}`;
+                
+                const productCard = `
+                    <div class="product-card" onclick="addToCart(${product.id})">
+                        <h5>${product.name}</h5>
+                        <div class="price">Tsh ${product.sellingPrice.toLocaleString()}</div>
+                        <div class="${stockClass}">${stockText}</div>
+                    </div>
+                `;
+                grid.innerHTML += productCard;
+            });
+        }
+
+        function searchPOSProducts() {
+            const searchTerm = document.getElementById('posProductSearch').value.toLowerCase();
+            const productCards = document.getElementById('productsGrid').getElementsByClassName('product-card');
+            
+            for (let i = 0; i < productCards.length; i++) {
+                const productName = productCards[i].getElementsByTagName('h5')[0].textContent.toLowerCase();
+                if (productName.includes(searchTerm)) {
+                    productCards[i].style.display = 'block';
+                } else {
+                    productCards[i].style.display = 'none';
+                }
+            }
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            if (product.stock === 0) {
+                showToast('Bidhaa hii haipo kwenye stock!', 'warning');
+                return;
+            }
+            
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                if (existingItem.quantity >= product.stock) {
+                    showToast('Umefikia kikomo cha stock!', 'warning');
+                    return;
+                }
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    ...product,
+                    quantity: 1
+                });
+            }
+            
+            updateCartDisplay();
+            showToast(`${product.name} imeongezwa kwenye karatasi!`, 'success');
+        }
+
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            const cartItemCount = document.getElementById('cartItemCount');
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-cart text-center py-5">
+                        <i class="fas fa-shopping-basket fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Hakuna bidhaa kwenye karatasi</p>
+                        <small class="text-muted">Bofya kwenye bidhaa kuongeza kwenye karatasi</small>
+                    </div>
+                `;
+                cartTotal.textContent = 'Tsh 0';
+                cartItemCount.textContent = '0';
+                return;
+            }
+            
+            let total = 0;
+            let totalItems = 0;
+            cartItems.innerHTML = '';
+            
+            cart.forEach(item => {
+                const itemTotal = item.sellingPrice * item.quantity;
+                total += itemTotal;
+                totalItems += item.quantity;
+                
+                const cartItem = `
+                    <div class="cart-item">
+                        <div>
+                            <strong>${item.name}</strong>
+                            <br>
+                            <small class="text-muted">Tsh ${item.sellingPrice.toLocaleString()} × ${item.quantity}</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-bold text-success">Tsh ${itemTotal.toLocaleString()}</span>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="decreaseQuantity(${item.id})">-</button>
+                                <span class="mx-2">${item.quantity}</span>
+                                <button class="quantity-btn" onclick="increaseQuantity(${item.id})">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                cartItems.innerHTML += cartItem;
+            });
+            
+            cartTotal.textContent = `Tsh ${total.toLocaleString()}`;
+            cartItemCount.textContent = totalItems.toString();
+        }
+
+        function increaseQuantity(productId) {
+            const item = cart.find(i => i.id === productId);
+            const product = products.find(p => p.id === productId);
+            
+            if (item && product && item.quantity < product.stock) {
+                item.quantity++;
+                updateCartDisplay();
+            } else {
+                showToast('Umefikia kikomo cha stock!', 'warning');
+            }
+        }
+
+        function decreaseQuantity(productId) {
+            const item = cart.find(i => i.id === productId);
+            if (item) {
+                item.quantity--;
+                if (item.quantity === 0) {
+                    cart = cart.filter(i => i.id !== productId);
+                }
+                updateCartDisplay();
+            }
+        }
+
+        function clearCart() {
+            if (cart.length === 0) return;
+            
+            if (confirm('Unahakika unataka kufuta bidhaa zote kwenye karatasi?')) {
+                cart = [];
+                updateCartDisplay();
+                showToast('Karatasi imefutwa!', 'success');
+            }
+        }
+
+        function processPayment() {
+            if (cart.length === 0) {
+                showToast('Karatasi ni tupu!', 'warning');
+                return;
+            }
+            
+            const total = cart.reduce((sum, item) => sum + (item.sellingPrice * item.quantity), 0);
+            const customerName = prompt('Ingiza jina la mteja:', 'Mteja');
+            
+            if (customerName) {
+                completeSale(customerName);
+            }
+        }
+
+        function completeSale(customerName = 'Mteja') {
+            if (cart.length === 0) {
+                showToast('Karatasi ni tupu!', 'warning');
+                return;
+            }
+            
+            const sale = {
+                id: sales.length > 0 ? Math.max(...sales.map(s => s.id)) + 1 : 1,
+                date: new Date().toLocaleDateString('en-CA'),
+                customer: customerName,
+                items: [...cart],
+                total: cart.reduce((sum, item) => sum + (item.sellingPrice * item.quantity), 0)
+            };
+            
+            // Update product stocks
+            cart.forEach(cartItem => {
+                const product = products.find(p => p.id === cartItem.id);
+                if (product) {
+                    product.stock -= cartItem.quantity;
+                }
+            });
+            
+            sales.push(sale);
+            localStorage.setItem('sales', JSON.stringify(sales));
+            localStorage.setItem('products', JSON.stringify(products));
+            
+            // Show receipt
+            showReceipt(sale);
+            
+            cart = [];
+            updateCartDisplay();
+            loadProducts();
+            updateDashboardStats();
+            loadRecentSales();
+            loadAlerts();
+        }
+
+        function showReceipt(sale) {
+            const receiptContent = document.getElementById('receiptContent');
+            let itemsHtml = '';
+            
+            sale.items.forEach(item => {
+                itemsHtml += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${item.quantity}</td>
+                        <td>Tsh ${item.sellingPrice.toLocaleString()}</td>
+                        <td>Tsh ${(item.sellingPrice * item.quantity).toLocaleString()}</td>
+                    </tr>
+                `;
+            });
+            
+            receiptContent.innerHTML = `
+                <div class="receipt-header">
+                    <h2>${settings.businessName}</h2>
+                    <p>${settings.businessAddress}</p>
+                    <p>${settings.businessPhone}</p>
+                    <p>ID: #${sale.id.toString().padStart(3, '0')} | Tarehe: ${sale.date}</p>
+                </div>
+                <table class="receipt-items">
+                    <thead>
+                        <tr>
+                            <th>Bidhaa</th>
+                            <th>Qty</th>
+                            <th>Bei</th>
+                            <th>Jumla</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemsHtml}
+                    </tbody>
+                </table>
+                <div class="receipt-total text-end">
+                    <p>Jumla: Tsh ${sale.total.toLocaleString()}</p>
+                    <p>Asante kwa kununua!</p>
+                </div>
+            `;
+            
+            const modal = new bootstrap.Modal(document.getElementById('receiptModal'));
+            modal.show();
+        }
+
+        function printReceipt() {
+            const receiptContent = document.getElementById('receiptContent').innerHTML;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Risiti - ${settings.businessName}</title>
+                    <style>
+                        body { font-family: monospace; margin: 0; padding: 20px; }
+                        .receipt-container { max-width: 400px; margin: 0 auto; }
+                        .receipt-header { text-align: center; border-bottom: 2px dashed #000; padding-bottom: 1rem; margin-bottom: 1rem; }
+                        .receipt-items { width: 100%; margin-bottom: 1rem; border-collapse: collapse; }
+                        .receipt-items th { text-align: left; border-bottom: 1px dashed #000; padding: 0.5rem 0; }
+                        .receipt-items td { padding: 0.25rem 0; }
+                        .receipt-total { border-top: 2px dashed #000; padding-top: 1rem; font-weight: bold; text-align: right; }
+                        @media print { 
+                            body { margin: 0; padding: 10px; }
+                            .receipt-container { max-width: 100%; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="receipt-container">
+                        ${receiptContent}
+                    </div>
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                            setTimeout(function() {
+                                window.close();
+                            }, 500);
+                        };
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        // Report Generation
+        function generateDailyReport() {
+            const today = new Date().toLocaleDateString('en-CA');
+            const todaySales = sales.filter(s => s.date === today);
+            const totalSales = todaySales.reduce((sum, sale) => sum + sale.total, 0);
+            const totalItems = todaySales.reduce((sum, sale) => sum + sale.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0);
+            
+            let salesHtml = '';
+            todaySales.forEach(sale => {
+                salesHtml += `
+                    <tr>
+                        <td>#${sale.id.toString().padStart(3, '0')}</td>
+                        <td>${sale.customer}</td>
+                        <td>${sale.items.length}</td>
+                        <td>${sale.items.reduce((sum, item) => sum + item.quantity, 0)}</td>
+                        <td>Tsh ${sale.total.toLocaleString()}</td>
+                    </tr>
+                `;
+            });
+            
+            const reportContent = document.getElementById('reportContent');
+            reportContent.innerHTML = `
+                <div class="report-header">
+                    <h1>${settings.businessName}</h1>
+                    <h3>Ripoti ya Mauzo ya Leo</h3>
+                    <p>Tarehe: ${today} | Jumla ya Mauzo: ${todaySales.length}</p>
+                </div>
+                
+                <div class="report-summary">
+                    <h4>Muhtasari wa Leo</h4>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p><strong>Jumla ya Mauzo:</strong> ${todaySales.length}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><strong>Jumla ya Bidhaa:</strong> ${totalItems}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><strong>Jumla ya Mapato:</strong> Tsh ${totalSales.toLocaleString()}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>ID ya Mauzo</th>
+                            <th>Mteja</th>
+                            <th>Aina za Bidhaa</th>
+                            <th>Jumla ya Bidhaa</th>
+                            <th>Jumla (Tsh)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${salesHtml}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" class="text-end"><strong>JUMLA:</strong></td>
+                            <td><strong>Tsh ${totalSales.toLocaleString()}</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+                <div class="mt-4">
+                    <p><strong>Maelezo:</strong></p>
+                    <ul>
+                        <li>Ripoti hii inaonyesha mauzo yote ya leo</li>
+                        <li>Idadi ya jumla ya mauzo: ${todaySales.length}</li>
+                        <li>Jumla ya mapato: Tsh ${totalSales.toLocaleString()}</li>
+                        <li>Tarehe ya ripoti: ${new Date().toLocaleDateString('sw-TZ')}</li>
+                    </ul>
+                </div>
+            `;
+            
+            document.getElementById('reportModalTitle').textContent = 'Ripoti ya Mauzo ya Leo';
+            const modal = new bootstrap.Modal(document.getElementById('reportModal'));
+            modal.show();
+        }
+
+        function generateSalesReport() {
+            const totalSales = sales.reduce((sum, sale) => sum + sale.total, 0);
+            const totalItems = sales.reduce((sum, sale) => sum + sale.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0);
+            
+            // Group sales by date
+            const salesByDate = {};
+            sales.forEach(sale => {
+                if (!salesByDate[sale.date]) {
+                    salesByDate[sale.date] = [];
+                }
+                salesByDate[sale.date].push(sale);
+            });
+            
+            let salesHtml = '';
+            Object.keys(salesByDate).sort().reverse().forEach(date => {
+                const dailySales = salesByDate[date];
+                const dailyTotal = dailySales.reduce((sum, sale) => sum + sale.total, 0);
+                const dailyItems = dailySales.reduce((sum, sale) => sum + sale.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0);
+                
+                salesHtml += `
+                    <tr>
+                        <td>${date}</td>
+                        <td>${dailySales.length}</td>
+                        <td>${dailyItems}</td>
+                        <td>Tsh ${dailyTotal.toLocaleString()}</td>
+                    </tr>
+                `;
+            });
+            
+            const reportContent = document.getElementById('reportContent');
+            reportContent.innerHTML = `
+                <div class="report-header">
+                    <h1>${settings.businessName}</h1>
+                    <h3>Ripoti ya Mauzo Yote</h3>
+                    <p>Tarehe ya Ripoti: ${new Date().toLocaleDateString('sw-TZ')} | Jumla ya Mauzo: ${sales.length}</p>
+                </div>
+                
+                <div class="report-summary">
+                    <h4>Muhtasari wa Jumla</h4>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <p><strong>Jumla ya Mauzo:</strong> ${sales.length}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Jumla ya Bidhaa:</strong> ${totalItems}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Jumla ya Mapato:</strong> Tsh ${totalSales.toLocaleString()}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Mapato ya Wastani:</strong> Tsh ${sales.length > 0 ? Math.round(totalSales / sales.length).toLocaleString() : 0}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Tarehe</th>
+                            <th>Idadi ya Mauzo</th>
+                            <th>Jumla ya Bidhaa</th>
+                            <th>Jumla ya Mapato (Tsh)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${salesHtml}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>JUMLA YOTE:</strong></td>
+                            <td><strong>Tsh ${totalSales.toLocaleString()}</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+                <div class="mt-4">
+                    <p><strong>Maelezo:</strong></p>
+                    <ul>
+                        <li>Ripoti hii inaonyesha mauzo yote tangu mwanzo</li>
+                        <li>Idadi ya jumla ya mauzo: ${sales.length}</li>
+                        <li>Jumla ya mapato: Tsh ${totalSales.toLocaleString()}</li>
+                        <li>Mapato ya wastani kwa kila mauzo: Tsh ${sales.length > 0 ? Math.round(totalSales / sales.length).toLocaleString() : 0}</li>
+                        <li>Tarehe ya ripoti: ${new Date().toLocaleDateString('sw-TZ')}</li>
+                    </ul>
+                </div>
+            `;
+            
+            document.getElementById('reportModalTitle').textContent = 'Ripoti ya Mauzo Yote';
+            const modal = new bootstrap.Modal(document.getElementById('reportModal'));
+            modal.show();
+        }
+
+        function printReport() {
+            const reportContent = document.getElementById('reportContent').innerHTML;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Ripoti - ${settings.businessName}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+                        .report-container { max-width: 800px; margin: 0 auto; }
+                        .report-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 1rem; margin-bottom: 2rem; }
+                        .report-summary { margin-bottom: 2rem; }
+                        .report-table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; }
+                        .report-table th, .report-table td { border: 1px solid #000; padding: 0.5rem; text-align: left; }
+                        .report-table th { background: #f8f9fa; }
+                        @media print { 
+                            body { margin: 0; padding: 10px; }
+                            .report-container { max-width: 100%; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="report-container">
+                        ${reportContent}
+                    </div>
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                            setTimeout(function() {
+                                window.close();
+                            }, 500);
+                        };
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        function downloadReport() {
+            // Create PDF content (simulated)
+            const reportContent = document.getElementById('reportContent').innerText;
+            const blob = new Blob([reportContent], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `sales_report_${new Date().toISOString().split('T')[0]}.pdf`);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            showToast('Ripoti imepakuliwa kama PDF!', 'success');
+        }
+
+        // User Management with Approval System
+        function loadUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '';
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const isSuperAdmin = currentUser.role === 'superadmin';
+            
+            users.forEach(user => {
+                let statusClass, statusText;
+                
+                if (user.status === 'active') {
+                    statusClass = 'bg-success';
+                    statusText = 'Aktiv';
+                } else if (user.status === 'pending') {
+                    statusClass = 'status-pending';
+                    statusText = 'Inasubiri';
+                } else if (user.status === 'blocked') {
+                    statusClass = 'status-blocked';
+                    statusText = 'Imekatwa';
+                } else {
+                    statusClass = 'bg-secondary';
+                    statusText = 'Haaktiv';
+                }
+                
+                const roleBadges = {
+                    'superadmin': 'bg-danger',
+                    'admin': 'bg-primary',
+                    'cashier': 'bg-warning'
+                };
+                const roleNames = {
+                    'superadmin': 'Msimamizi Mkuu',
+                    'admin': 'Msimamizi',
+                    'cashier': 'Keshia'
+                };
+                
+                const canDelete = user.id !== currentUser.id && (currentUser.role === 'superadmin' || (currentUser.role === 'admin' && user.role !== 'superadmin'));
+                const canBlock = user.id !== currentUser.id && isSuperAdmin;
+                const canApprove = user.status === 'pending' && isSuperAdmin;
+                
+                const actionButtons = `
+                    ${canApprove ? `
+                    <button class="btn btn-sm btn-outline-success me-1" onclick="approveUser(${user.id})" title="Idhinisha Mtumiaji">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    ` : ''}
+                    ${canBlock ? `
+                    <button class="btn btn-sm btn-outline-warning me-1" onclick="toggleUserStatus(${user.id})" title="${user.status === 'blocked' ? 'Fungua Mtumiaji' : 'Kata Mtumiaji'}">
+                        <i class="fas ${user.status === 'blocked' ? 'fa-lock-open' : 'fa-ban'}"></i>
+                    </button>
+                    ` : ''}
+                    ${canDelete ? `
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${user.id})" title="Futa Mtumiaji">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    ` : ''}
+                `;
+                
+                const row = `
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="user-avatar-xs">
+                                    ${user.profile_picture ? `<img src="${user.profile_picture}" alt="Profile">` : user.full_name.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <strong class="small">${user.full_name}</strong>
+                                    ${user.id === currentUser.id ? '<span class="badge bg-primary ms-1 small">You</span>' : ''}
+                                    ${user.bio ? '<br><small class="text-muted">' + user.bio + '</small>' : ''}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="small">${user.email}</td>
+                        <td><span class="badge ${roleBadges[user.role]} small">${roleNames[user.role]}</span></td>
+                        <td><span class="badge ${statusClass} small">${statusText}</span></td>
+                        <td class="small">${user.created_at}</td>
+                        <td class="small">${user.last_login || '-'}</td>
+                        <td>
+                            ${actionButtons}
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function showAddUserModal() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            if (currentUser.role !== 'superadmin' && currentUser.role !== 'admin') {
+                showToast('Umekosewa ruhusa ya kufanya hatua hii!', 'error');
+                return;
+            }
+            
+            const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
+            document.getElementById('addUserForm').reset();
+            modal.show();
+        }
+
+        function saveUser() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            if (currentUser.role !== 'superadmin' && currentUser.role !== 'admin') {
+                showToast('Umekosewa ruhusa ya kufanya hatua hii!', 'error');
+                return;
+            }
+            
+            const user = {
+                id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1,
+                full_name: document.getElementById('userFullName').value,
+                email: document.getElementById('userEmail').value,
+                password: document.getElementById('userPassword').value,
+                role: document.getElementById('userRole').value,
+                bio: document.getElementById('userBio').value,
+                status: 'active', // New users are automatically approved by admin
+                profile_picture: '',
+                created_at: new Date().toISOString().split('T')[0],
+                last_login: '-'
+            };
+            
+            // Check if email already exists
+            if (users.find(u => u.email === user.email)) {
+                showToast('Barua pepe hii tayari imesajiliwa!', 'error');
+                return;
+            }
+            
+            users.push(user);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+            modal.hide();
+            
+            loadUsers();
+            loadAlerts();
+            showToast('Mtumiaji amehifadhiwa kikamilifu!', 'success');
+        }
+
+        function approveUser(id) {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            if (currentUser.role !== 'superadmin') {
+                showToast('Umekosewa ruhusa ya kufanya hatua hii!', 'error');
+                return;
+            }
+            
+            const user = users.find(u => u.id === id);
+            if (user) {
+                user.status = 'active';
+                localStorage.setItem('users', JSON.stringify(users));
+                loadUsers();
+                loadAlerts();
+                showToast('Mtumiaji ameidhinishwa!', 'success');
+            }
+        }
+
+        function toggleUserStatus(id) {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            if (currentUser.role !== 'superadmin') {
+                showToast('Umekosewa ruhusa ya kufanya hatua hii!', 'error');
+                return;
+            }
+            
+            if (id === currentUser.id) {
+                showToast('Huwezi kujiblock wewe mwenyewe!', 'error');
+                return;
+            }
+            
+            const user = users.find(u => u.id === id);
+            if (user) {
+                if (user.status === 'blocked') {
+                    user.status = 'active';
+                    showToast('Mtumiaji amefunguliwa!', 'success');
+                } else {
+                    user.status = 'blocked';
+                    showToast('Mtumiaji amekatwa!', 'success');
+                }
+                localStorage.setItem('users', JSON.stringify(users));
+                loadUsers();
+                loadAlerts();
+            }
+        }
+
+        function deleteUser(id) {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            if (currentUser.role !== 'superadmin' && currentUser.role !== 'admin') {
+                showToast('Umekosewa ruhusa ya kufanya hatua hii!', 'error');
+                return;
+            }
+            
+            if (id === currentUser.id) {
+                showToast('Huwezi kujifuta wewe mwenyewe!', 'error');
+                return;
+            }
+            
+            if (confirm('Unahakika unataka kufuta mtumiaji hii?')) {
+                users = users.filter(u => u.id !== id);
+                localStorage.setItem('users', JSON.stringify(users));
+                loadUsers();
+                showToast('Mtumiaji amefutwa!', 'success');
+            }
+        }
+
+        // Utility Functions
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>${message}</span>
+                    <button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()"></button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 3000);
+        }
+
+        function logout() {
+            if (confirm('Unahakika unataka kutoka?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>
